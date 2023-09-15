@@ -13,7 +13,6 @@ import lombok.ToString;
 public class GroupJoinRequestMessage extends Message {
 
     private String groupName;
-
     private String username;
 
     public GroupJoinRequestMessage(String username, String groupName) {
