@@ -8,10 +8,12 @@ import com.rookie.message.GroupMembersRequestMessage;
 import com.rookie.message.GroupQuitRequestMessage;
 import com.rookie.message.LoginRequestMessage;
 import com.rookie.message.LoginResponseMessage;
+import com.rookie.message.PongMessage;
 import com.rookie.protocol.MessageCodecSharable;
 import com.rookie.protocol.ProtocolFrameDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
@@ -20,6 +22,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -50,6 +55,21 @@ public class ChatClient {
                     ch.pipeline().addLast(new ProtocolFrameDecoder());
                     //ch.pipeline().addLast(LOGGING_HANDLER);
                     ch.pipeline().addLast(MESSAGE_CODEC);
+                    // 用来判断是不是 读空闲时间过长 或 写空闲时间过长
+                    // 3s 内如果没有向服务器写数据 会触发一个 IdleState#WRITER_IDLE 事件
+                    ch.pipeline().addLast(new IdleStateHandler(0, 3, 0));
+                    // ChannelDuplexHandler 可以同时作为入站和出站处理器
+                    ch.pipeline().addLast(new ChannelDuplexHandler() {
+                        @Override
+                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                            IdleStateEvent event = (IdleStateEvent) evt;
+                            if (IdleState.WRITER_IDLE == event.state()) {
+                                // 触发了写空闲事件
+                                //log.debug("3s 没有写数据了 客户端自动发送一个心跳包");
+                                ctx.writeAndFlush(new PongMessage());
+                            }
+                        }
+                    });
                     ch.pipeline().addLast("client handler", new ChannelInboundHandlerAdapter() {
                         // 接收响应消息
                         @Override
