@@ -19,13 +19,19 @@ public class GroupChatRequestMessageHandler extends SimpleChannelInboundHandler<
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, GroupChatRequestMessage msg) throws Exception {
         String from = msg.getFrom();
+        String groupName = msg.getGroupName();
         Channel fromChannel = SessionFactory.getSession().getChannel(from);
-        List<Channel> channels = GroupSessionFactory.getGroupSession().getMembersChannel(msg.getGroupName());
-        GroupChatResponseMessage message = new GroupChatResponseMessage(from, msg.getContent());
+        List<Channel> channels = GroupSessionFactory.getGroupSession().getMembersChannel(groupName);
+        // 禁止非群成员发送消息
+        if (!channels.contains(fromChannel)) {
+            ctx.writeAndFlush(new GroupChatResponseMessage(false, "发送失败，您未在群聊[" + groupName + "]"));
+            return;
+        }
         for (Channel ch : channels) {
             if (ch != fromChannel) {
-                ch.writeAndFlush(message);
+                ch.writeAndFlush(new GroupChatResponseMessage(from, msg.getContent()));
             }
         }
+        ctx.writeAndFlush(new GroupChatResponseMessage(true, "发送成功"));
     }
 }
