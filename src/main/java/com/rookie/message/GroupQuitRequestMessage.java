@@ -13,7 +13,6 @@ import lombok.ToString;
 public class GroupQuitRequestMessage extends Message {
 
     private String groupName;
-
     private String username;
 
     public GroupQuitRequestMessage(String username, String groupName) {

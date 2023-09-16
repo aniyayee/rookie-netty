@@ -52,8 +52,8 @@ public class ChatServer {
                     ch.pipeline().addLast(GROUP_CREATE_HANDLER);
                     ch.pipeline().addLast(GROUP_CHAT_HANDLER);
                     ch.pipeline().addLast(GROUP_JOIN_HANDLER);
-                    /*ch.pipeline().addLast(GROUP_MEMBERS_HANDLER);
-                    ch.pipeline().addLast(GROUP_QUIT_HANDLER);*/
+                    ch.pipeline().addLast(GROUP_MEMBERS_HANDLER);
+                    ch.pipeline().addLast(GROUP_QUIT_HANDLER);
                 }
             });
             Channel channel = serverBootstrap.bind(8080).sync().channel();
