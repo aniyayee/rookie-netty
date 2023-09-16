@@ -9,6 +9,7 @@ import com.rookie.server.handler.GroupJoinRequestMessageHandler;
 import com.rookie.server.handler.GroupMembersRequestMessageHandler;
 import com.rookie.server.handler.GroupQuitRequestMessageHandler;
 import com.rookie.server.handler.LoginRequestMessageHandler;
+import com.rookie.server.handler.QuitHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -37,6 +38,7 @@ public class ChatServer {
         GroupJoinRequestMessageHandler GROUP_JOIN_HANDLER = new GroupJoinRequestMessageHandler();
         GroupMembersRequestMessageHandler GROUP_MEMBERS_HANDLER = new GroupMembersRequestMessageHandler();
         GroupQuitRequestMessageHandler GROUP_QUIT_HANDLER = new GroupQuitRequestMessageHandler();
+        QuitHandler QUIT_HANDLER = new QuitHandler();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.channel(NioServerSocketChannel.class);
@@ -54,6 +56,7 @@ public class ChatServer {
                     ch.pipeline().addLast(GROUP_JOIN_HANDLER);
                     ch.pipeline().addLast(GROUP_MEMBERS_HANDLER);
                     ch.pipeline().addLast(GROUP_QUIT_HANDLER);
+                    ch.pipeline().addLast(QUIT_HANDLER);
                 }
             });
             Channel channel = serverBootstrap.bind(8080).sync().channel();
