@@ -19,16 +19,14 @@ public class ChatRequestMessageHandler extends SimpleChannelInboundHandler<ChatR
         String to = msg.getTo();
         // 接收方 channel
         Channel channel = SessionFactory.getSession().getChannel(to);
-        ChatResponseMessage message;
         // 不在线
         if (channel == null) {
-            message = new ChatResponseMessage(false, "对方用户不存在或者不在线");
-            ctx.writeAndFlush(message);
+            ctx.writeAndFlush(new ChatResponseMessage(false, "对方用户不存在或者不在线"));
         }
         // 在线
         else {
-            message = new ChatResponseMessage(msg.getFrom(), msg.getContent());
-            channel.writeAndFlush(message);
+            channel.writeAndFlush(new ChatResponseMessage(msg.getFrom(), msg.getContent()));
+            ctx.writeAndFlush(new ChatResponseMessage(true, "发送成功"));
         }
     }
 }

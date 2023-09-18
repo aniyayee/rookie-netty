@@ -15,8 +15,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class LoginRequestMessageHandler extends SimpleChannelInboundHandler<LoginRequestMessage> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, LoginRequestMessage msg)
-        throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, LoginRequestMessage msg) throws Exception {
         String username = msg.getUsername();
         String password = msg.getPassword();
         boolean login = UserServiceFactory.getUserService().login(username, password);
