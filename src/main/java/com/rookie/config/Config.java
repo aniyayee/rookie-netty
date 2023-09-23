@@ -1,6 +1,6 @@
 package com.rookie.config;
 
-import com.rookie.protocol.SerializerAlgorithm;
+import com.rookie.protocol.Serializer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -30,12 +30,12 @@ public abstract class Config {
         }
     }
 
-    public static SerializerAlgorithm getSerializerAlgorithm() {
+    public static Serializer.Algorithm getSerializerAlgorithm() {
         String value = properties.getProperty("serializer.algorithm");
         if (value == null) {
-            return SerializerAlgorithm.Java;
+            return Serializer.Algorithm.Java;
         } else {
-            return SerializerAlgorithm.valueOf(value);
+            return Serializer.Algorithm.valueOf(value);
         }
     }
 }

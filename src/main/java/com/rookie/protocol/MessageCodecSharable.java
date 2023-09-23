@@ -20,7 +20,7 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws Exception {
-        SerializerAlgorithm algorithm = Config.getSerializerAlgorithm();
+        Serializer.Algorithm algorithm = Config.getSerializerAlgorithm();
         ByteBuf out = ctx.alloc().buffer();
         // 1. 4 字节的魔数
         out.writeBytes(new byte[]{1, 2, 3, 4});
@@ -54,7 +54,7 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes, 0, length);
-        SerializerAlgorithm algorithm = SerializerAlgorithm.getByInt(serializerType);
+        Serializer.Algorithm algorithm = Serializer.Algorithm.getByInt(serializerType);
         Class<? extends Message> messageClass = Message.getMessageClass(messageType);
         Message message = algorithm.deserialize(messageClass, bytes);
         //log.debug("{}, {}, {}, {}, {}, {}", magicNum, version, serializerType, messageType, sequenceId, length);

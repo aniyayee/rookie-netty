@@ -54,8 +54,8 @@ public enum SerializerAlgorithm implements Serializer {
     };
 
     // 从协议的字节中得到是哪种序列化算法
-    public static SerializerAlgorithm getByInt(int type) {
-        SerializerAlgorithm[] array = SerializerAlgorithm.values();
+    public static Serializer.Algorithm getByInt(int type) {
+        Serializer.Algorithm[] array = Serializer.Algorithm.values();
         if (type < 0 || type > array.length - 1) {
             throw new IllegalArgumentException("超过 SerializerAlgorithm 范围");
         }

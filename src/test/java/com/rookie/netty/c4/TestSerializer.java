@@ -4,7 +4,7 @@ import com.rookie.config.Config;
 import com.rookie.message.LoginRequestMessage;
 import com.rookie.message.Message;
 import com.rookie.protocol.MessageCodecSharable;
-import com.rookie.protocol.SerializerAlgorithm;
+import com.rookie.protocol.Serializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -19,14 +19,14 @@ public class TestSerializer {
         MessageCodecSharable CODEC = new MessageCodecSharable();
         LoggingHandler LOGGING = new LoggingHandler();
         EmbeddedChannel channel = new EmbeddedChannel(LOGGING, CODEC, LOGGING);
-        LoginRequestMessage message = new LoginRequestMessage("zhangsan", "123", "zs");
+        LoginRequestMessage message = new LoginRequestMessage("zhang", "123", "zc");
         channel.writeOutbound(message);
         //ByteBuf buf = messageToByteBuf(message);
         //channel.writeInbound(buf);
     }
 
     public static ByteBuf messageToByteBuf(Message msg) {
-        SerializerAlgorithm algorithm = Config.getSerializerAlgorithm();
+        Serializer.Algorithm algorithm = Config.getSerializerAlgorithm();
         ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
         out.writeBytes(new byte[]{1, 2, 3, 4});
         out.writeByte(1);

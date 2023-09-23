@@ -12,7 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
-public class RpcResponseMessage extends AbstractResponseMessage {
+public class RpcResponseMessage extends Message {
 
     /**
      * 返回值
