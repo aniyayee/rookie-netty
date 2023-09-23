@@ -27,7 +27,7 @@ public abstract class Message implements Serializable {
     public static final int GroupMembersResponseMessage = 13;
     public static final int PingMessage = 14;
     public static final int PongMessage = 15;
-    private static final Map<Integer, Class<?>> messageClasses = new HashMap<>();
+    private static final Map<Integer, Class<? extends Message>> messageClasses = new HashMap<>();
 
     static {
         messageClasses.put(LoginRequestMessage, LoginRequestMessage.class);
@@ -49,7 +49,7 @@ public abstract class Message implements Serializable {
     private int sequenceId;
     private int messageType;
 
-    public static Class<?> getMessageClass(int messageType) {
+    public static Class<? extends Message> getMessageClass(int messageType) {
         return messageClasses.get(messageType);
     }
 
