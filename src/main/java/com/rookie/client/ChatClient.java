@@ -45,6 +45,8 @@ public class ChatClient {
         MessageCodecSharable MESSAGE_CODEC = new MessageCodecSharable();
         CountDownLatch WAIT_FOR_LOGIN = new CountDownLatch(1);
         AtomicBoolean LOGIN = new AtomicBoolean(false);
+        AtomicBoolean EXIT = new AtomicBoolean(false);
+        Scanner in = new Scanner(System.in);
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);
@@ -91,16 +93,21 @@ public class ChatClient {
                         public void channelActive(ChannelHandlerContext ctx) throws Exception {
                             // 负责接收用户在控制台的输入，负责向服务器发送各种消息
                             new Thread(() -> {
-                                Scanner in = new Scanner(System.in);
                                 System.out.println("请输入用户名:");
                                 String username = in.nextLine();
+                                if (EXIT.get()) {
+                                    return;
+                                }
                                 System.out.println("请输入密码:");
                                 String password = in.nextLine();
+                                if (EXIT.get()) {
+                                    return;
+                                }
                                 // 构造消息对象
                                 LoginRequestMessage message = new LoginRequestMessage(username, password, username);
                                 // 发送消息
                                 ctx.writeAndFlush(message);
-                                System.out.println("等待输入...");
+                                System.out.println("等待后续操作...");
                                 try {
                                     WAIT_FOR_LOGIN.await();
                                 } catch (InterruptedException e) {
@@ -121,7 +128,15 @@ public class ChatClient {
                                     System.out.println("gquit [group name]");
                                     System.out.println("quit");
                                     System.out.println("==================================");
-                                    String command = in.nextLine();
+                                    String command = null;
+                                    try {
+                                        command = in.nextLine();
+                                    } catch (Exception e) {
+                                        break;
+                                    }
+                                    if (EXIT.get()) {
+                                        return;
+                                    }
                                     String[] s = command.split(" ");
                                     switch (s[0]) {
                                         case "send":
@@ -147,9 +162,25 @@ public class ChatClient {
                                         case "quit":
                                             ctx.channel().close();
                                             return;
+                                        default:
+                                            System.out.println("请检查输入的命令...");
                                     }
                                 }
                             }, "system in").start();
+                        }
+
+                        // 在连接断开时触发
+                        @Override
+                        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                            log.debug("连接已经断开，按任意键退出..");
+                            EXIT.set(true);
+                        }
+
+                        // 在出现异常时触发
+                        @Override
+                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                            log.debug("连接已经断开，按任意键退出..{}", cause.getMessage());
+                            EXIT.set(true);
                         }
                     });
                 }
