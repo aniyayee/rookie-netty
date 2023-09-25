@@ -1,9 +1,9 @@
 package com.rookie.client;
 
+import com.rookie.client.handler.RpcResponseMessageHandler;
 import com.rookie.message.RpcRequestMessage;
 import com.rookie.protocol.MessageCodecSharable;
 import com.rookie.protocol.ProtocolFrameDecoder;
-import com.rookie.server.handler.RpcResponseMessageHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -25,7 +25,6 @@ public class RpcClient {
         NioEventLoopGroup group = new NioEventLoopGroup();
         LoggingHandler LOGGING_HANDLER = new LoggingHandler(LogLevel.DEBUG);
         MessageCodecSharable MESSAGE_CODEC = new MessageCodecSharable();
-        // rpc 响应消息处理器，待实现
         RpcResponseMessageHandler RPC_HANDLER = new RpcResponseMessageHandler();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -42,15 +41,14 @@ public class RpcClient {
             });
             Channel channel = bootstrap.connect("localhost", 8080).sync().channel();
 
-            ChannelFuture future = channel.writeAndFlush(
-                new RpcRequestMessage(1,
-                    "com.rookie.server.service.HelloService",
-                    "sayHello",
-                    String.class,
-                    new Class[]{String.class},
-                    new Object[]{"steve"}
-                )
-            ).addListener(promise -> {
+            ChannelFuture future = channel.writeAndFlush(new RpcRequestMessage(
+                1,
+                "com.rookie.server.service.HelloService",
+                "sayHello",
+                String.class,
+                new Class[]{String.class},
+                new Object[]{"steve"}
+            )).addListener(promise -> {
                 if (!promise.isSuccess()) {
                     Throwable cause = promise.cause();
                     log.error("error", cause);
