@@ -1,5 +1,21 @@
 package com.rookie.message;
 
+import com.rookie.chat.message.ChatRequestMessage;
+import com.rookie.chat.message.ChatResponseMessage;
+import com.rookie.chat.message.GroupChatRequestMessage;
+import com.rookie.chat.message.GroupChatResponseMessage;
+import com.rookie.chat.message.GroupCreateRequestMessage;
+import com.rookie.chat.message.GroupCreateResponseMessage;
+import com.rookie.chat.message.GroupJoinRequestMessage;
+import com.rookie.chat.message.GroupJoinResponseMessage;
+import com.rookie.chat.message.GroupMembersRequestMessage;
+import com.rookie.chat.message.GroupMembersResponseMessage;
+import com.rookie.chat.message.GroupQuitRequestMessage;
+import com.rookie.chat.message.GroupQuitResponseMessage;
+import com.rookie.chat.message.LoginRequestMessage;
+import com.rookie.chat.message.LoginResponseMessage;
+import com.rookie.rpc.message.RpcRequestMessage;
+import com.rookie.rpc.message.RpcResponseMessage;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

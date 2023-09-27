@@ -1,7 +1,7 @@
 package com.rookie.netty.c4;
 
 import com.rookie.config.Config;
-import com.rookie.message.LoginRequestMessage;
+import com.rookie.message.chat.LoginRequestMessage;
 import com.rookie.message.Message;
 import com.rookie.protocol.MessageCodecSharable;
 import com.rookie.protocol.Serializer;
